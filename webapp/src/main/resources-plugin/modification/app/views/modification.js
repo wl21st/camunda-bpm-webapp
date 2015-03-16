@@ -1,25 +1,37 @@
 define([
-  'angular'
+  'angular',
+  'text!./modification.html'
 ],
 function(
-  angular
+  angular,
+  template
 ) {
   'use strict';
-  var $ = angular.element;
+  // var $ = angular.element;
+  console.info('modification plugin loaded');
 
-  return ['ViewsProvider', function PluginConfiguration(ViewsProvider) {
-    ViewsProvider.registerDefaultView('cockpit.processInstance.runtime.tab', {
-      id: 'modification-process-instances',
+  return function (ngModule) {
+    console.info('modification plugin initialization');
 
-      label: 'Modify Process Instances',
+    var Configuration = function PluginConfiguration(ViewsProvider) {
+      ViewsProvider.registerDefaultView('cockpit.processInstance.runtime.tab', {
+        id: 'modification-process-instances',
 
-      url: $('base').attr('cockpit-api') + 'plugin/modification/static/app/modification.html',
+        label: 'Modify Process Instances',
 
-      controller: [function() {
-        console.info('Pull Up!');
-      }],
+        template: template,
+        // url: $('base').attr('cockpit-api') + 'plugin/modification/static/app/modification.html',
 
-      priority: 20
-    });
-  }];
+        controller: [function() {
+          console.info('Pull Up!');
+        }],
+
+        priority: 20
+      });
+    };
+
+    Configuration.$inject = ['ViewsProvider'];
+
+    ngModule.config(Configuration);
+  };
 });

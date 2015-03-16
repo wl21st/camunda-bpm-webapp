@@ -40,14 +40,6 @@ module.exports = function() {
         exclude: ['text'],
         insertRequire: ['standaloneTask/app/plugin']
       }
-    },
-    modification: {
-      options: {
-        out: '<%= pkg.gruntConfig.buildTarget %>/modification/app/plugin.js',
-        include: ['modification/app/plugin'],
-        exclude: ['text'],
-        insertRequire: ['modification/app/plugin']
-      }
     }
   };
 
