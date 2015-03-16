@@ -11,30 +11,18 @@ define([
   angular,
   template
 ) {
-  var ngModule = angular.module('cockpit.plugin.modification.views', []);
-
-  console.info('modification plugin initialization');
-
-  var Configuration = function PluginConfiguration(ViewsProvider) {
+  return ['ViewsProvider', function (ViewsProvider) {
     ViewsProvider.registerDefaultView('cockpit.processInstance.runtime.tab', {
       id: 'modification-process-instances',
 
-      label: 'Modify Process Instances',
+      label: 'Modify',
 
       template: template,
-      // url: $('base').attr('cockpit-api') + 'plugin/modification/static/app/modification.html',
 
       controller: [function() {
-        console.info('Pull Up!');
       }],
 
       priority: 20
     });
-  };
-
-  Configuration.$inject = ['ViewsProvider'];
-
-  ngModule.config(Configuration);
-
-  return ngModule;
+  }];
 });

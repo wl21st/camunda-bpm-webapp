@@ -32,7 +32,10 @@ define([
   './processInstance/addVariableDialog',
   './processInstance/updateSuspensionStateAction',
   './processInstance/updateSuspensionStateDialog',
-  './processInstance/activityInstanceStatisticsOverlay'
+  './processInstance/activityInstanceStatisticsOverlay',
+
+  // process instance modification
+  './modification/main'
 ], function(
   angular,
 
@@ -62,7 +65,10 @@ define([
   addVariableDialog,
   updateSuspensionStateActionPI,
   updateSuspensionStateDialogPI,
-  activityInstanceStatisticsOverlayPI) {
+  activityInstanceStatisticsOverlayPI,
+
+  processInstanceModification
+) {
   'use strict';
   var ngModule = angular.module('cockpit.plugin.base.views', []);
 
@@ -90,6 +96,8 @@ define([
   ngModule.config(updateSuspensionStateActionPI);
   ngModule.controller('UpdateProcessInstanceSuspensionStateController', updateSuspensionStateDialogPI);
   ngModule.config(activityInstanceStatisticsOverlayPI);
+
+  ngModule.config(processInstanceModification);
 
   return ngModule;
 });
