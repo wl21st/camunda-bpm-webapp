@@ -1,5 +1,127 @@
 <!-- CE # webapp/src/main/resources-plugin/base/app/views/modification.html -->
+<div class="process-instance-modification">
 
-Hello modification world!
+  <datalist id="bpmn-elements">
+    <option ng-repeat="(elementId, bpmnElement) in bpmnElements"
+            value="{{ elementId }}">{{ (bpmnElement.name || elementId) }}</option>
+  </datalist>
 
+
+  <div class="col-xs-12 col-md-4 selection">
+    <button ng-click="switchSelectionMode()"
+            class="btn btn-primary">
+      <span class="glyphicon"
+            ng-class="{'glyphicon-ban-circle': selectionMode, 'glyphicon-screenshot': !selectionMode}"></span>
+      {{ (selectionMode ? 'Cancel selection' : 'Select activity') }}
+    </button>
+  </div>
+
+
+  <div class="col-xs-12 col-md-8 modification">
+    <section ng-repeat="(instructionIndex, instruction) in instructions"
+             ng-class="instruction.operation">
+      <header class="row">
+        <div class="col-xs-10 actions">
+          <a class="glyphicon glyphicon-minus-sign"
+             ng-click="removeInstruction($index)"></a>
+        </div>
+        <div class="col-xs-2 instances-counter">
+          <span class="badge">{{ instruction.activityInstanceIds.length }}</span>
+        </div>
+      </header>
+
+      <div class="row settings">
+        <div class="col-xs-4">
+          <select class="form-control"
+                  ng-model="instruction.operation">
+            <option value="cancel"
+                    ng-selected="instruction.operation === 'cancel'">
+              Cancel
+            </option>
+            <option value="startBefore"
+                    ng-selected="instruction.operation === 'startBefore'">
+              Start before
+            </option>
+            <option value="startAfter"
+                    ng-selected="instruction.operation === 'startAfter'">
+              Start After
+            </option>
+            <option value="move"
+                    ng-selected="instruction.operation === 'move'">
+              Move
+            </option>
+          </select>
+        </div>
+
+        <div class="col-xs-4">
+          <div class="input-group">
+            <input type="text"
+                   class="form-control"
+                   placeholder="Target"
+                   list="bpmn-elements" />
+            <span class="input-group-addon">
+              <span class="glyphicon glyphicon-screenshot"></span>
+            </span>
+          </div>
+          <!--
+          <select class="form-control"
+                  ng-if="operationHasTarget(instruction.operation)">
+            <option ng-repeat="(elementId, bpmnElement) in bpmnElements"
+                    value="{{ elementId }}">{{ (bpmnElement.name || elementId) }}</option>
+          </select>
+           -->
+        </div>
+
+        <div class="col-xs-4"></div>
+      </div>
+
+      <div class="row activity-instances"
+           ng-if="instruction.activityInstanceIds.length > 1">
+        <div class="col-xs-4">Filter instances</div>
+
+        <div class="col-xs-8 responsive-table">
+          <div class="row head">
+            <div class="select col-xs-1">
+              <input type="checkbox"
+                     ng-click="toggleInstanceSelections(instructionIndex, $index)" />
+            </div>
+            <div class="name col-xs-11">
+              Name
+            </div>
+          </div>
+
+          <div ng-repeat="instance in instruction.allInstanceIds"
+               class="row body"
+               title="{{ instance.id }}">
+            <div class="select col-xs-1">
+              <input type="checkbox"
+                     ng-checked="instructionHasInstance(instruction, instance.id)" />
+            </div>
+            <div class="name col-xs-11">
+              {{ instance.name }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row variables"
+           ng-if="operationHasVariables(instruction.operation)">
+        <div class="col-xs-4">Variables</div>
+        <div class="col-xs-8">
+          Variables tool comes here
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="col-xs-12 col-md-8 help-text"
+       ng-if="!instructions.length">
+    Yada yada...
+  </div>
+
+  <div class="col-xs-12 col-md-12 actions"
+       ng-if="instructions.length">
+    <button class="btn btn-primary">Apply modifications</button>
+  </div>
+</div>
 <!-- CE / webapp/src/main/resources-plugin/base/app/views/modification.html -->
