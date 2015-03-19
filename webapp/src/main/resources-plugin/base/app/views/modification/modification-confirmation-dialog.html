@@ -1,0 +1,53 @@
+<div class="modal-header">
+  <h3 class="modal-title">Confirm the modifications</h3>
+</div>
+
+<div class="modal-body">
+  <div class="row">
+    <div class="col-xs-12">
+      You are playing with <span title="fire" class="glyphicon glyphicon-fire"></span>.
+      Please, carefully review the modifications beeing performed.
+    </div>
+  </div>
+
+  <div class="row instruction"
+       ng-repeat="instruction in requestPayload.instructions"
+       ng-class="instructionCssClass(instruction.type)">
+    <div class="col-xs-2">
+      <button class="btn btn-link"
+              ng-click="removeConfirmationInstruction($index)">
+        <span class="glyphicon glyphicon-minus-sign"></span>
+      </button>
+    </div>
+
+    <div class="col-xs-3 type">{{ instruction.type }}</div>
+
+    <div class="col-xs-7 target">
+      {{ (instruction.activityId || instruction.activityInstanceId || instruction.transationId) }}
+    </div>
+  </div>
+
+  <div class="row debug"
+       ng-init="{payloadDebug: true}">
+    <div class="col-xs-1">
+      <button class="btn btn-link"
+              ng-click="payloadDebug = !payloadDebug">
+        <span class="glyphicon"
+              ng-class="{'glyphicon-eye-open': !payloadDebug, 'glyphicon-eye-close': payloadDebug}"></span>
+      </button>
+    </div>
+
+    <div class="col-xs-11"
+         ng-show="payloadDebug">
+      <pre>{{ requestPayload | json }}</pre>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-link"
+          ng-click="cancel()">Cancel</button>
+
+  <button class="btn btn-primary"
+          ng-click="ok()">Proceed</button>
+</div>
