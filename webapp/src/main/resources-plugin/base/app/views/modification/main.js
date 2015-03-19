@@ -92,15 +92,15 @@ define([
       var instances = {};
 
       activityInstanceIds.forEach(function (id) {
-        instances[id] = true;
+        instances[id] = false;
       });
 
       var countInst = activityInstanceIds.length;
 
       $scope.instructions.push({
-        operation:    countInst >= 1 ? 'cancelAll' : 'startBefore',
-        // operation:    countInst > 1 ? 'cancelSome' : (countInst === 1 ? 'cancelAll' : 'startBefore'),
+        operation:    countInst >= 1 ? 'cancel' : 'startBefore',
         id:           activityId,
+        instanceIds:  activityInstanceIds,
         instances:    instances,
         variables:    [],
         bpmnElement:  $scope.bpmnElements[activityId]
@@ -119,8 +119,41 @@ define([
       $scope.instructions = instructions;
     };
 
-    $scope.instructionInstancesCount = function (instruction) {
-      return Object.keys(instruction.instances).length;
+    $scope.instructionSelectedInstancesCount = function (instruction) {
+      var c = 0;
+      for (var inst in instruction.instances) {
+        if (instruction.instances[inst]) {
+          c++;
+        }
+      }
+      if (c === 0) {
+        return Object.keys(instruction.instances).length;
+      }
+      return c;
+    };
+
+    // $scope.instructionInstancesCount = function (instruction) {
+    //   return Object.keys(instruction.instances).length;
+    // };
+
+    $scope.instructionAddInstance = function (instructionIndex) {
+      var input = angular.element('[list="activity-' + instructionIndex + '-instances"]');
+      var instanceId = input.val();
+      if (!instanceId) { return; }
+      // var val = $scope.instructions[instructionIndex].instances[instanceId];
+      // if (val) { return; }
+      $scope.instructions[instructionIndex].instances[instanceId] = true;
+      input.val('');
+    };
+
+    $scope.instructionSelectAllInstances = function (instructionIndex) {
+      for (var id in $scope.instructions[instructionIndex].instances) {
+        // probably not needed in some clean code
+        if (!id) {
+          delete $scope.instructions[instructionIndex].instances[id];
+        }
+        $scope.instructions[instructionIndex].instances[id] = false;
+      }
     };
 
     $scope.instructionChangeOperation = function ($event, $index) {
@@ -168,10 +201,11 @@ define([
       items = items.slice(0, index).concat(items.slice(index + 1));
     };
 
+    // see http://stage.docs.camunda.org/api-references/rest/#process-instance-modify-process-instance-execution-state
     $scope.requestPayload = {
-      skipCustomListeners: true,
-      skipIoMappings: true,
-      instructions: []
+      skipCustomListeners:  true,
+      skipIoMappings:       true,
+      instructions:         []
     };
 
     function serializeInstructions() {
@@ -179,21 +213,22 @@ define([
 
       $scope.instructions.forEach(function (instruction) {
         switch (instruction.operation) {
-          case 'cancelAll':
-            $scope.requestPayload.instructions.push({
-              type: 'cancel',
-              activityId: instruction.id
-            });
-            break;
-
-          case 'cancelSome':
-            Object.keys(instruction.instances).forEach(function (instanceId) {
-              if (!instruction.instances[instanceId]) { return; }
+          case 'cancel':
+            if ($scope.instructionSelectedInstancesCount(instruction) === instruction.instanceIds.length) {
               $scope.requestPayload.instructions.push({
                 type: 'cancel',
-                activityInstanceId: instanceId
+                activityId: instruction.id
               });
-            });
+            }
+            else {
+              Object.keys(instruction.instances).forEach(function (instanceId) {
+                if (!instruction.instances[instanceId]) { return; }
+                $scope.requestPayload.instructions.push({
+                  type: 'cancel',
+                  activityInstanceId: instanceId
+                });
+              });
+            }
             break;
 
           case 'startBefore':
