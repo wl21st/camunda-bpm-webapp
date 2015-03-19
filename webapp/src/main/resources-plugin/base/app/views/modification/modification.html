@@ -43,15 +43,37 @@
                 Cancel all instances of
               </option>
               <option value="cancelSome"
-                      ng-if="instructionInstancesCount(instruction.instances) > 1"
+                      ng-if="instructionInstancesCount(instruction) > 1"
                       ng-selected="instruction.operation === 'cancelSome'">
                  Cancel some instances of
               </option>
             </select>
           </div>
 
-          <h4 class="col-xs-8 element-name">{{ instruction.bpmnElement.name }}</h4>
+          <h4 class="col-xs-4 element-name">
+            {{ instruction.bpmnElement.name }}
+            <span class="badge"
+                  tooltip="Affected instances of &quot;{{ instruction.bpmnElement.name }}&quot;"
+                  ng-if="instructionInstancesCount(instruction) > 1">
+              {{ instructionInstancesCount(instruction) }}
+            </span>
+          </h4>
+
+          <div class="col-xs-4 instance-suggestions"
+               ng-if="instructionInstancesCount(instruction) > 1">
+            <datalist id="activity-{{ instructionIndex }}-instances">
+              <option ng-repeat="(instanceId, selected) in instruction.instances"
+                      value="{{ instanceId }}">{{ instanceId }}</option>
+            </datalist>
+            <input list="activity-{{ instructionIndex }}-instances"
+                   class="form-control"
+                   placeholder="Pick instances" />
+          </div>
         </header>
+
+        <div class="row"
+             debugged="instruction.instances"
+             cam-widget-debug></div>
 
         <div class="activity-instances"
              ng-if="instruction.operation === 'cancelSome'">
@@ -83,7 +105,7 @@
             <div class="col-xs-3 name">Name</div>
 
             <div class="col-xs-5 value">Value</div>
-          </div>
+          </div><!-- .header -->
 
           <div class="row body"
                ng-repeat="variable in instruction.variables">
@@ -139,23 +161,7 @@
             </div><!-- .value -->
           </div>
         </div>
-
-        <!-- <div class="row debug"
-             ng-init="{debug: true}">
-          <div class="col-xs-1">
-            <button class="btn btn-link"
-                    ng-click="debug = !debug">
-              <span class="glyphicon"
-                    ng-class="{'glyphicon-eye-open': !debug, 'glyphicon-eye-close': debug}"></span>
-            </button>
-          </div>
-
-          <div class="col-xs-11"
-               ng-show="debug">
-            <pre>{{ instruction | json }}</pre>
-          </div>
-        </div> --><!-- .debug -->
-      </div>
+      </div><!-- .modification -->
     </section>
   </div>
 
@@ -185,7 +191,9 @@
         </button>
       </div>
     </div>
-
   </div><!-- .actions -->
+
+  <div cam-widget-debug
+       debugged="requestPayload"></div>
 </form>
 <!-- CE / webapp/src/main/resources-plugin/base/app/views/modification.html -->

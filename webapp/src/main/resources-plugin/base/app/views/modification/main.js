@@ -119,8 +119,8 @@ define([
       $scope.instructions = instructions;
     };
 
-    $scope.instructionInstancesCount = function (instances) {
-      return Object.keys(instances).length;
+    $scope.instructionInstancesCount = function (instruction) {
+      return Object.keys(instruction.instances).length;
     };
 
     $scope.instructionChangeOperation = function ($event, $index) {

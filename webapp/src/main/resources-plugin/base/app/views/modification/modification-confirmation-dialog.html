@@ -27,22 +27,11 @@
     </div>
   </div>
 
-  <div class="row debug"
-       ng-init="{payloadDebug: true}">
-    <div class="col-xs-1">
-      <button class="btn btn-link"
-              ng-click="payloadDebug = !payloadDebug">
-        <span class="glyphicon"
-              ng-class="{'glyphicon-eye-open': !payloadDebug, 'glyphicon-eye-close': payloadDebug}"></span>
-      </button>
-    </div>
+  <div cam-widget-debug
+       debugged="requestPayload"
+       class="row"></div>
+</div><!-- .modal-body -->
 
-    <div class="col-xs-11"
-         ng-show="payloadDebug">
-      <pre>{{ requestPayload | json }}</pre>
-    </div>
-  </div>
-</div>
 
 <div class="modal-footer">
   <button class="btn btn-link"
