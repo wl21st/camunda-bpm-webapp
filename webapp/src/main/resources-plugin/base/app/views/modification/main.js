@@ -6,10 +6,12 @@
 'use strict';
 define([
   'angular',
+  'camunda-bpm-sdk-js',
   'text!./modification.html',
   'text!./modification-confirmation-dialog.html'
 ], function(
   angular,
+  CamSDK,
   template,
   templateDialog
 ) {
@@ -70,11 +72,22 @@ define([
   var ViewController = [
     '$scope',
     '$modal',
+    'Uri',
   function(
     $scope,
-    $modal
+    $modal,
+    Uri
   ) {
     var instanceData = $scope.processData.newChild($scope);
+
+    var client = new CamSDK.Client({
+      apiUri: Uri.appUri('engine://'),
+      engine: Uri.appUri(':engine')
+    });
+
+    var variableService = client.resource('variable');
+    var processInstanceService = client.resource('process-instance');
+
 
     $scope.instructions = [];
 
@@ -132,16 +145,10 @@ define([
       return c;
     };
 
-    // $scope.instructionInstancesCount = function (instruction) {
-    //   return Object.keys(instruction.instances).length;
-    // };
-
     $scope.instructionAddInstance = function (instructionIndex) {
       var input = angular.element('[list="activity-' + instructionIndex + '-instances"]');
       var instanceId = input.val();
       if (!instanceId) { return; }
-      // var val = $scope.instructions[instructionIndex].instances[instanceId];
-      // if (val) { return; }
       $scope.instructions[instructionIndex].instances[instanceId] = true;
       input.val('');
     };
@@ -197,8 +204,10 @@ define([
     };
 
     $scope.removeInstructionVariable = function (instructionIndex, index) {
+      console.info('removeInstructionVariable', instructionIndex, index);
       var items = $scope.instructions[instructionIndex].variables;
       items = items.slice(0, index).concat(items.slice(index + 1));
+      $scope.instructions[instructionIndex].variables = items;
     };
 
     // see http://stage.docs.camunda.org/api-references/rest/#process-instance-modify-process-instance-execution-state
@@ -260,24 +269,32 @@ define([
         resolve: {
           requestPayload: function () {
             return $scope.requestPayload;
+          },
+          processInstanceService: function () {
+            return processInstanceService;
           }
         }
       });
 
       modalInstance.result.then(function (requestPayload) {
         var send = angular.copy(requestPayload);
-        $scope.instructions = [];
+        // send.id = '';
         console.info('confirmed payload', send);
-      },
-      function () {
 
+        processInstanceService.modify(send, function (err) {
+          if (err) { throw err; }
+          $scope.instructions = [];
+        });
+      },
+      function (reason) {
+        console.info('reason', reason);
       });
     };
 
     instanceData.observe([
-      'filter', 'activityIdToInstancesMap', 'bpmnElements',
+      'processInstance', 'filter', 'activityIdToInstancesMap', 'bpmnElements',
     ], function(
-      filter, activityIdToInstancesMap, bpmnElements
+      processInstance, filter, activityIdToInstancesMap, bpmnElements
     ) {
       $scope.bpmnElements = bpmnElements;
 

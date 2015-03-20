@@ -105,13 +105,12 @@
                 <span class="glyphicon glyphicon-minus-sign"></span>
               </a>
             </div>
-            <div class="col-xs-1">
-              <a class="btn btn-link">
-                <span class="glyphicon glyphicon-question-sign"></span>
+
+            <div class="col-xs-11 instance-id">
+              <a ng-click="instructionInstanceInfo(instanceId)">
+                {{ instanceId }}
               </a>
-            </div>
-            <div class="col-xs-10 instance-id">
-              {{ instanceId }}
+              <div class="instance-variables"></div>
             </div>
           </div>
         </div>
@@ -138,7 +137,6 @@
                ng-repeat="variable in instruction.variables">
             <div class="col-xs-1 actions">
               <button class="btn btn-link"
-                      tooltip="Remove the variable"
                       ng-click="removeInstructionVariable(instructionIndex, $index)">
                 <span class="glyphicon glyphicon-minus-sign"></span>
               </button>

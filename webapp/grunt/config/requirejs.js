@@ -12,6 +12,7 @@ module.exports = function() {
       baseUrl: '<%= pkg.gruntConfig.pluginDir %>/',
 
       paths: {
+        'camunda-bpm-sdk-js': 'empty:',
         'angular': 'empty:',
         'text': '<%= pkg.gruntConfig.pluginDir.split("/").map(function () { return ".." }).join("/") %>/node_modules/requirejs-text/text'
       }
