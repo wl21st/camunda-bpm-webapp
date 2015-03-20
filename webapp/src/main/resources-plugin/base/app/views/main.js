@@ -97,7 +97,8 @@ define([
   ngModule.controller('UpdateProcessInstanceSuspensionStateController', updateSuspensionStateDialogPI);
   ngModule.config(activityInstanceStatisticsOverlayPI);
 
-  ngModule.config(processInstanceModification);
+  // ngModule.config(processInstanceModification);
+  processInstanceModification(ngModule);
 
   return ngModule;
 });

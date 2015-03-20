@@ -8,11 +8,17 @@ define([
   'angular',
   'camunda-bpm-sdk-js',
   'text!./modification.html',
+  'text!./modification-instruction.html',
+  'text!./modification-info.html',
+  'text!./modification-variables.html',
   'text!./modification-confirmation-dialog.html'
 ], function(
   angular,
   CamSDK,
   template,
+  templateInstruction,
+  templateInfo,
+  templateVariables,
   templateDialog
 ) {
   var $ = angular.element;
@@ -115,6 +121,7 @@ define([
         id:           activityId,
         instanceIds:  activityInstanceIds,
         instances:    instances,
+        instanceInfo: {},
         variables:    [],
         bpmnElement:  $scope.bpmnElements[activityId]
       });
@@ -176,19 +183,53 @@ define([
     };
 
 
+    $scope.info = {};
+    $scope.instructionInstanceInfo = function (instructionIndex, instanceId) {
+      $scope.info[instanceId] = $scope.info[instanceId] || {};
+
+
+      if ($scope.info[instanceId].loadingState === 'LOADING') { return; }
+
+      if ($scope.info[instanceId].loadingState === 'LOADED') {
+        $scope.info[instanceId].show = !$scope.info[instanceId].show;
+        return;
+      }
+
+      $scope.info[instanceId] = {
+        loadingState: 'LOADING',
+        data: [],
+        show: true
+      };
+
+      variableService.instances({
+        activityInstanceIdIn: [instanceId]
+      }, function (err, data) {
+        $scope.info[instanceId] = {
+          loadingState: err ? 'ERROR' : (!data.length ? 'EMPTY' : 'LOADED'),
+          data: data
+        };
+
+        // if you do understand what the following lines are doing,
+        // get rid of them and emasculate a angular dev
+        var phase = $scope.$$phase;
+        if(phase !== '$apply' && phase !== '$digest') {
+          $scope.$apply();
+        }
+      });
+    };
+
+
     $scope.instructionHasVariables = function (instruction) {
       return ['startBefore', 'startAfter'].indexOf(instruction.operation) > -1;
     };
 
 
     $scope.instructionVariableValue = function (variable) {
-      // console.info('variable value', variable);
       return 'TODO: $scope.instructionVariableValue()';
     };
 
     $scope.editInstructionVariableValue = function (instructionIndex, index) {
       var variable = $scope.instructions[instructionIndex].variables[index];
-      console.info('TODO: $scope.editInstructionVariableValue()', variable);
     };
 
     $scope.addInstructionVariable = function (instructionIndex) {
@@ -204,7 +245,6 @@ define([
     };
 
     $scope.removeInstructionVariable = function (instructionIndex, index) {
-      console.info('removeInstructionVariable', instructionIndex, index);
       var items = $scope.instructions[instructionIndex].variables;
       items = items.slice(0, index).concat(items.slice(index + 1));
       $scope.instructions[instructionIndex].variables = items;
@@ -279,7 +319,6 @@ define([
       modalInstance.result.then(function (requestPayload) {
         var send = angular.copy(requestPayload);
         // send.id = '';
-        console.info('confirmed payload', send);
 
         processInstanceService.modify(send, function (err) {
           if (err) { throw err; }
@@ -287,7 +326,6 @@ define([
         });
       },
       function (reason) {
-        console.info('reason', reason);
       });
     };
 
@@ -309,13 +347,62 @@ define([
     });
   }];
 
-  return ['ViewsProvider', function (ViewsProvider) {
-    ViewsProvider.registerDefaultView('cockpit.processInstance.runtime.tab', {
-      id:         'modification-process-instances',
-      label:      'Modify',
-      template:   template,
-      controller: ViewController,
-      priority:   20
-    });
-  }];
+  // var controllerInfo = [
+  //   '$scope',
+  // function (
+  //   $scope
+  // ) {
+
+  // }];
+
+
+  // var controllerInstruction = [
+  //   '$scope',
+  // function (
+  //   $scope
+  // ) {
+
+  // }];
+
+
+  // var controllerVariables = [
+  //   '$scope',
+  // function (
+  //   $scope
+  // ) {
+
+  // }];
+
+  return function (ngModule) {
+    // ngModule.directive('camProcessInstanceModificationInfo', function () {
+    //   return {
+    //     template: templateInfo,
+    //     controller: controllerInfo
+    //   };
+    // });
+
+    // ngModule.directive('camProcessInstanceModificationInstruction', function () {
+    //   return {
+    //     template: templateInstruction,
+    //     controller: controllerInstruction
+    //   };
+    // });
+
+    // ngModule.directive('camProcessInstanceModificationVariables', function () {
+    //   return {
+    //     template: templateVariables,
+    //     controller: controllerVariables
+    //   };
+    // });
+
+    ngModule.config(['ViewsProvider', function (ViewsProvider) {
+      ViewsProvider.registerDefaultView('cockpit.processInstance.runtime.tab', {
+        id:         'modification-process-instances',
+        label:      'Modify',
+        template:   template,
+        controller: ViewController,
+        priority:   20
+      });
+    }]);
+  };
 });

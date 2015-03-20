@@ -19,13 +19,7 @@
         </button>
       </div>
 
-      <div class="col-xs-1 meta">
-        <span class="badge"
-              ng-show="!instructionHasVariables(instruction)"
-              tooltip="Affected instances">{{ instruction.activityInstanceIds.length }}</span>
-      </div>
-
-      <div class="col-xs-10 modification">
+      <div class="col-xs-11 modification">
         <header class="row">
           <div class="col-xs-3">
             <select class="form-control"
@@ -106,11 +100,33 @@
               </a>
             </div>
 
-            <div class="col-xs-11 instance-id">
-              <a ng-click="instructionInstanceInfo(instanceId)">
-                {{ instanceId }}
-              </a>
-              <div class="instance-variables"></div>
+            <div class="col-xs-11">
+              <span class="instance-id">{{ instanceId }}</span>
+              <a class="glyphicon"
+                 ng-class="{'glyphicon-eye-open': !info[instanceId].show, 'glyphicon-eye-close': info[instanceId].show}"
+                 tooltip="Show / hide variables of the instance"
+                 ng-click="instructionInstanceInfo(instructionIndex, instanceId)"></a>
+
+              <div cam-widget-loader
+                   ng-show="info[instanceId].show"
+                   loading-state="{{ info[instanceId].loadingState }}"
+                   text-error="Could not get the instance variables."
+                   class="instance-variables">
+
+
+                <div class="row header">
+                  <span class="col-xs-4 name">Name</span>
+                  <span class="col-xs-3 type">Type</span>
+                  <span class="col-xs-5 value">Value</span>
+                </div>
+
+                <div ng-repeat="variable in info[instanceId].data"
+                     class="row body">
+                  <span class="col-xs-4 name">{{ variable.name }}</span>
+                  <span class="col-xs-3 type">{{ variable.type }}</span>
+                  <span class="col-xs-5 value">{{ variable.value }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -219,7 +235,6 @@
   </div><!-- .actions -->
 
   <div cam-widget-debug
-       debugged="requestPayload"
-       open="true"></div>
+       debugged="requestPayload"></div>
 </form>
 <!-- CE / webapp/src/main/resources-plugin/base/app/views/modification.html -->
