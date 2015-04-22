@@ -12,10 +12,33 @@ module.exports = function(grunt) {
   config.pkg = pkg;
   config.protractorConfig = protractorConfig;
 
+  var requireJsConf = {
+    options: {
+      optimize: '<%= (buildTarget === "dist" ? "uglify2" : "none") %>',
+    }
+  };
+
+  require('./grunt/config/requirejs')(config, requireJsConf);
+  require('camunda-admin-ui/grunt/config/requirejs')(config, requireJsConf);
+
+  var copyConf = { };
+  require('camunda-admin-ui/grunt/config/copy')(config, copyConf);
+
+  var lessConf = { };
+  require('camunda-admin-ui/node_modules/camunda-commons-ui/grunt/config/less')(config, lessConf, {
+    appName: 'admin',
+    sourceDir: pkg.gruntConfig.adminSourceDir,
+    buildTarget: pkg.gruntConfig.adminBuildTarget,
+  });
+
   grunt.initConfig({
     pkg:              pkg,
 
-    requirejs:        require('./grunt/config/requirejs')(config),
+    requirejs:        requireJsConf,
+
+    copy:             copyConf,
+
+    less:             lessConf,
 
     clean:            require('./grunt/config/clean')(config),
 
@@ -26,10 +49,18 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build', function(mode) {
 
-    grunt.config.data.mode = mode || 'prod';
+    grunt.config.data.buildTarget = mode || 'prod';
 
-    grunt.task.run(['clean', 'requirejs']);
+    grunt.task.run([
+      'clean',
+      'requirejs',
+      'copy',
+      'less'
+    ]);
+
   });
+
+
 
   grunt.registerTask('auto-build', [
     'build:dev',
