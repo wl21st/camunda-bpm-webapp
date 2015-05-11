@@ -9,8 +9,12 @@ module.exports = Table.extend({
   tabLabel: 'User Tasks',
   tableRepeater: 'userTask in userTasks',
 
-  activity: function(item) {
+/*  activity: function(item) {
     return this.tableItem(item, '.activity');
+  },*/
+
+  activity: function(item) {
+    return this.table().get(item).element(by.binding('userTask.instance.name'));
   },
 
   assignee: function(item) {

@@ -84,7 +84,7 @@ describe('Cockpit Process Instance Spec', function() {
   });
 
 
-  describe('edit User Task assignee', function() {
+  describe.only('edit User Task assignee', function() {
 
     before(function() {
       return testHelper(setupFile, function() {
@@ -108,6 +108,9 @@ describe('Cockpit Process Instance Spec', function() {
 
 
     it('should select user task', function() {
+
+      // given
+      expect(instancePage.diagram.isActivitySelected('UserTask_1')).to.eventually.be.false;
 
       // when
       instancePage.userTasksTab.activity(0).click();

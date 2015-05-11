@@ -26,14 +26,15 @@ module.exports = Base.extend({
 
   isActivitySelected: function(activityName) {
     return this.diagramActivity(activityName).getAttribute('class').then(function(classes) {
+      console.info('Test Case Analyzer: class of ' + activityName, classes);
       return classes.indexOf('highlight') !== -1;
     });
-  },
+  }
 
-  isActivityNotSelected: function(activityName) {
+/*  isActivityNotSelected: function(activityName) {
     return this.diagramActivity(activityName).getAttribute('class').then(function(classes) {
       return classes.indexOf('highlight') === -1;
     });
-  }
+  }*/
 
 });
