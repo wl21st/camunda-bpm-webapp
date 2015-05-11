@@ -84,7 +84,7 @@ describe('Cockpit Process Instance Spec', function() {
   });
 
 
-  describe('edit User Task assignee', function() {
+  describe.only('edit User Task assignee', function() {
 
     before(function() {
       return testHelper(setupFile, function() {
