@@ -109,6 +109,9 @@ describe('Cockpit Process Instance Spec', function() {
 
     it('should select user task', function() {
 
+      // given
+      expect(instancePage.diagram.isActivitySelected('UserTask_1')).to.eventually.be.false;
+
       // when
       instancePage.userTasksTab.activity(0).click();
 
