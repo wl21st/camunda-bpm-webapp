@@ -9,7 +9,7 @@ var editModalPage = dashboardPage.taskFilters.editFilterPage;
 
 describe('Tasklist Filter Criteria Spec', function() {
 
-  describe.only('add new criteria', function() {
+  describe('add new criteria', function() {
 
     before(function() {
       return testHelper(setupFile, function() {
@@ -320,6 +320,235 @@ describe('Tasklist Filter Criteria Spec', function() {
       // then
       expect(dashboardPage.taskFilters.editFilterPage.formElement().isPresent()).to.eventually.be.false;
     });
+
+  });
+
+  describe('play the accordion', function() {
+
+    before(function() {
+      return testHelper(setupFile, function() {
+
+        dashboardPage.navigateToWebapp('Tasklist');
+        dashboardPage.authentication.userLogin('admin', 'admin');
+      });
+    });
+
+    it('should open the filter edit menu', function() {
+
+      // given
+      dashboardPage.taskFilters.selectFilter(2);
+
+      // when
+      dashboardPage.taskFilters.editFilter(2);
+
+      // then
+      expect(element(by.css('.modal-content')).isDisplayed()).to.eventually.be.true;
+
+    });
+
+
+    it('should select criteria panels', function() {
+
+      // when
+      editModalPage.selectPanelByKey('criteria');
+
+      // then
+      expect(editModalPage.addCriterionButton().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should select variable panels', function() {
+      // when
+      editModalPage.selectPanelByKey('variable');
+
+      // then
+      expect(editModalPage.addVariableButton().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should select general panels', function() {
+      // when
+      editModalPage.selectPanelByKey('general');
+
+      // then
+      expect(editModalPage.autoRefreshCheckbox().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should select permission panels', function() {
+      // when
+      editModalPage.selectPanelByKey('permission');
+
+      // then
+      expect(editModalPage.addPermissionButton().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should select criteria panels', function() {
+
+      // when
+      editModalPage.selectPanelByKey('criteria');
+
+      // then
+      expect(editModalPage.addCriterionButton().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should select variable panels', function() {
+      // when
+      editModalPage.selectPanelByKey('variable');
+
+      // then
+      expect(editModalPage.addVariableButton().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should select general panels', function() {
+      // when
+      editModalPage.selectPanelByKey('general');
+
+      // then
+      expect(editModalPage.autoRefreshCheckbox().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should select permission panels', function() {
+      // when
+      editModalPage.selectPanelByKey('permission');
+
+      // then
+      expect(editModalPage.addPermissionButton().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should select criteria panels', function() {
+
+      // when
+      editModalPage.selectPanelByKey('criteria');
+
+      // then
+      expect(editModalPage.addCriterionButton().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should select variable panels', function() {
+      // when
+      editModalPage.selectPanelByKey('variable');
+
+      // then
+      expect(editModalPage.addVariableButton().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should select general panels', function() {
+      // when
+      editModalPage.selectPanelByKey('general');
+
+      // then
+      expect(editModalPage.autoRefreshCheckbox().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should select permission panels', function() {
+      // when
+      editModalPage.selectPanelByKey('permission');
+
+      // then
+      expect(editModalPage.addPermissionButton().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should select criteria panels', function() {
+
+      // when
+      editModalPage.selectPanelByKey('criteria');
+
+      // then
+      expect(editModalPage.addCriterionButton().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should select variable panels', function() {
+      // when
+      editModalPage.selectPanelByKey('variable');
+
+      // then
+      expect(editModalPage.addVariableButton().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should select general panels', function() {
+      // when
+      editModalPage.selectPanelByKey('general');
+
+      // then
+      expect(editModalPage.autoRefreshCheckbox().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should select permission panels', function() {
+      // when
+      editModalPage.selectPanelByKey('permission');
+
+      // then
+      expect(editModalPage.addPermissionButton().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should select criteria panels', function() {
+
+      // when
+      editModalPage.selectPanelByKey('criteria');
+
+      // then
+      expect(editModalPage.addCriterionButton().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should select variable panels', function() {
+      // when
+      editModalPage.selectPanelByKey('variable');
+
+      // then
+      expect(editModalPage.addVariableButton().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should select general panels', function() {
+      // when
+      editModalPage.selectPanelByKey('general');
+
+      // then
+      expect(editModalPage.autoRefreshCheckbox().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should select permission panels', function() {
+      // when
+      editModalPage.selectPanelByKey('permission');
+
+      // then
+      expect(editModalPage.addPermissionButton().isDisplayed()).to.eventually.be.true;
+    });
+
+  });
+
+  describe.skip('understand the accordion', function() {
+
+    before(function() {
+      return testHelper(setupFile, function() {
+
+        dashboardPage.navigateToWebapp('Tasklist');
+        dashboardPage.authentication.userLogin('admin', 'admin');
+      });
+    });
+
+    it('should open the filter edit menu', function() {
+
+      // given
+      dashboardPage.taskFilters.selectFilter(2);
+
+      // when
+      dashboardPage.taskFilters.editFilter(2);
+
+      // then
+      expect(element(by.css('.modal-content')).isDisplayed()).to.eventually.be.true;
+
+    });
+
+
+    it('should select criteria panels', function() {
+      editModalPage.selectPanelByKey('criteria');
+      expect(editModalPage.addCriterionButton().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should validate variable panels', function() {
+
+      expect(element(by.css('[ng-click="addVariable()"]')).isDisplayed()).to.eventually.be.false;
+    });
+
   });
 
 });
+

@@ -13,11 +13,22 @@ module.exports = Base.extend({
   },
 
   selectPanelByKey: function (key) {
+      var selecta = 'accordion [is-open="accordion.' + key + '"]';
+      var btnSelecta = selecta + ' [ng-click="toggleOpen()"]';
+      var theElement = element(by.css('.panel-collapse.in'));
+      var EC = protractor.ExpectedConditions;
+      var isPresent = EC.visibilityOf(theElement);
+
+      element(by.css(btnSelecta)).click();
+      browser.wait(isPresent, 5000);
+  },
+
+/*  selectPanelByKey: function (key) {
     var selecta = 'accordion [is-open="accordion.' + key + '"]';
     var btnSelecta = selecta + ' [ng-click="toggleOpen()"]';
     this.formElement().element(by.css(btnSelecta)).click();
     return this.isPanelOpen(key);
-  },
+  },*/
 
   isPanelOpen: function(key) {
     var selecta = 'accordion [is-open="accordion.' + key + '"]';
@@ -62,7 +73,15 @@ module.exports = Base.extend({
     return inputField;
   },
 
-  // authorizations
+  autoRefreshCheckbox: function() {
+    return element(by.model('filter.properties.refresh'));
+  },
+
+  // permissions
+  addPermissionButton: function() {
+    return element(by.css('[ng-click="addReadPermission()"]'));
+  },
+
   authorizationnList: function() {
     return this.formElement().all(by.repeater('(delta, authorization) in authorizations'));
   },
