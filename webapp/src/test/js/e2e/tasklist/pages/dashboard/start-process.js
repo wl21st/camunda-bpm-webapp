@@ -3,19 +3,25 @@
 var Page = require('./dashboard-view');
 
 module.exports = Page.extend({
-  navigationLinkElement: function () {
-    return element(by.css('.navbar li.start-process-action a'));
+
+  openStartProcessDialog: function() {
+    var theElement = this.searchProcessInput();
+    this.selectNavbarItem('Process');
+    this.waitForElementToBeVisible(theElement, 5000);
+  },
+
+  openDialogAndSelectProcess: function(name) {
+    this.openStartProcessDialog();
+    element(by.cssContainingText('.processes a', name)).click()
   },
 
   startProcessDialog: function () {
     return element(by.css('.modal .modal-content'));
   },
 
-
   businessKeyField: function () {
     return this.startProcessDialog().element(by.css('[cam-business-key]'));
   },
-
 
   genericFormAddVariableButton: function () {
     return element(by.css('[ng-click="addVariable()"]'));

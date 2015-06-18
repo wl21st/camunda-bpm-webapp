@@ -6,44 +6,104 @@
 var testHelper = require('../../test-helper');
 var setupFile = require('./process-start-setup');
 
-var page = require('../pages/dashboard');
+var dashboardPage = require('../pages/dashboard');
+var startDialogPage = dashboardPage.startProcess;
 
+describe.only('Tasklist Start Spec', function () {
 
-function openDialogAndSelectProcess(name, done) {
-  function select() {
-    element(by.cssContainingText('.processes a', name)).click()
-      .then(noErrorDone(done), done);
-  }
+  before(function() {
+    return testHelper(setupFile, function() {
 
-  function open() {
-    page.startProcess.navigationLinkElement().click()
-      .then(function () {
-        browser.sleep(1000).then(select, done);
-      }, done);
-  }
-
-  function close() {
-    element(by.css('[ng-click="$dismiss()"]')).click()
-      .then(open, done);
-  }
-
-  element(by.css('.modal-content')).isDisplayed()
-    .then(function (yepNope) {
-      if (yepNope) {
-        close();
-      }
-      else {
-        open();
-      }
+      dashboardPage.navigateToWebapp('Tasklist');
+      dashboardPage.authentication.userLogin('admin', 'admin');
     });
-}
+  });
 
 
-function noErrorDone(done) {
-  return function () { done(); };
-}
+  describe('start process dialog', function() {
 
-describe('Tasklist Start task', function () {
+    afterEach(function() {
+      startDialogPage.closeStartDialog();
+    });
+
+    it('should open', function() {
+
+      // when
+      dashboardPage.startProcess.openStartDialog();
+
+      // then
+      expect(startDialogPage.searchProcessInput().isDisplayed()).to.eventually.be.true;
+    });
+
+
+    it('should provide a list of processes that can be selected', function() {
+
+      // when
+      startDialogPage.openStartDialogAndSelectProcess(0);
+
+      // then
+      expect(startDialogPage.startButton().isEnabled()).to.eventually.be.true;
+    });
+
+  });
+
+
+  describe('process with generic start form', function() {
+
+    beforeEach(function() {
+      startDialogPage.openStartDialogAndSelectProcess(0);
+    });
+
+    afterEach(function() {
+      startDialogPage.closeStartDialog();
+    });
+
+    it('should disable start button when adding variable', function() {
+
+      // given
+      expect(startDialogPage.genericFormAddVariableButton().isDisplayed()).is.eventually.be.true;
+
+      // when
+      startDialogPage.genericFormAddVariableButton().click()
+
+      // then
+      expect(startDialogPage.startButton().isEnabled()).to.eventually.be.false;
+    });
+
+
+    it('should enable start button after adding variable information is complete', function() {
+
+      // given
+      expect(startDialogPage.genericFormAddVariableButton().isDisplayed()).is.eventually.be.true;
+
+      // when
+      startDialogPage.genericFormAddVariableButton().click();
+      startDialogPage.genericFormVariableNameInput(0, 'hans');
+      startDialogPage.genericFormVariableTypeInput(0, 'String');
+      startDialogPage.genericFormVariableValueInput(0, 'asdf');
+
+      // then
+      expect(startDialogPage.startButton().isEnabled()).to.eventually.be.true;
+    });
+
+
+    it('should allow to add business key', function() {
+
+      // given
+      expect(startDialogPage.businessKeyInput().isDisplayed()).is.eventually.be.true;
+
+      // when
+      startDialogPage.businessKeyInput('MyBusinessKey');
+
+      // then
+      expect(startDialogPage.startButton().isEnabled()).to.eventually.be.true;
+    });
+
+  });
+
+});
+
+/*describe.skip('Tasklist Start task', function () {
   before(function() {
     return testHelper(setupFile);
   });
@@ -52,10 +112,14 @@ describe('Tasklist Start task', function () {
   describe('menu link', function () {
     before(function () {
       page.navigateToWebapp('Tasklist');
-      page.authentication.userLogin('admin', 'admin');
     });
 
     it('can be found in navigation', function () {
+
+      // when
+      page.authentication.userLogin('admin', 'admin');
+
+      // then
       expect(page.startProcess.navigationLinkElement().isPresent())
         .to.eventually.eql(true);
 
@@ -68,15 +132,16 @@ describe('Tasklist Start task', function () {
   describe('process definitions list', function() {
     before(function () {
       page.navigateToWebapp('Tasklist');
-      // page.authentication.userLogin('admin', 'admin');
     });
 
 
     it('opens', function () {
       // when
-      page.startProcess.navigationLinkElement().click();
+      page.startProcess.openStartProcessDialog();
 
       // then
+      expect(page.startProcess.searchProcessInput().isPresent())
+        .to.eventually.eql(true);
       expect(page.startProcess.searchProcessInput().isDisplayed())
         .to.eventually.eql(true);
     });
@@ -93,7 +158,7 @@ describe('Tasklist Start task', function () {
       it('has a field for business key', function () {
         expect(page.startProcess.businessKeyField().isDisplayed())
           .to.eventually.eql(true);
-
+          browser.sleep(5000);
         page.startProcess.businessKeyField().sendKeys('bububu-businessKey');
       });
 
@@ -102,10 +167,10 @@ describe('Tasklist Start task', function () {
         expect(page.startProcess.genericFormAddVariableButton().isDisplayed())
           .to.eventually.eql(true);
 
-        // // when
+        // when
         page.startProcess.genericFormAddVariableButton().click();
 
-        // // then
+        // then
         expect(page.startProcess.genericFormRowsCount()).to.eventually.eql(1);
 
         expect(page.startProcess.startButton().getAttribute('disabled'))
@@ -157,3 +222,4 @@ describe('Tasklist Start task', function () {
     });
   });
 });
+*/
